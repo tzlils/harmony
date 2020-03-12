@@ -31,6 +31,6 @@ net.createServer((c) => {
             delete servers[c.remoteAddress];
         }
     })
-}).listen(8090, () => {
+}).listen({host: '0.0.0.0', port: 8090}, () => {
     console.log("Auth server started");
 })

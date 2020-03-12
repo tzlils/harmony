@@ -1,7 +1,7 @@
 const net = require('net');
 const EventEmitter = require('events');
 
-const auth = net.createConnection(8090, "127.0.0.1");
+const auth = net.createConnection(8090, "0.0.0.0");
 const channel = new EventEmitter();
 
 let users = {};
@@ -37,7 +37,7 @@ net.createServer((c) => {
         console.log(`[${c.id} exit]`);
         channel.removeListener('broadcast', broadcast);
     })
-}).listen(8080, () => {
+}).listen({host: '0.0.0.0',port: 8080}, () => {
     console.log("server started");
 })
 
