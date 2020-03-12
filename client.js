@@ -1,6 +1,7 @@
 #!/bin/node
 
 const net = require('net');
+const dns = require('dns');
 
 const user = process.argv[4];
 const chat = net.createConnection(8080, process.argv[2]);
@@ -8,7 +9,12 @@ const auth = net.createConnection(8090, process.argv[3]);
 process.stdin.resume();
 process.stdin.setEncoding('utf8');
 
-auth.write(JSON.stringify({intent: "register", data: {id: user, server: process.argv[2]}}));
+dns.lookup(process.argv[2], {
+    family: 4,
+    hints: dns.ADDRCONFIG | dns.V4MAPPED}, (err, address, family) => {
+    auth.write(JSON.stringify({intent: "register", data: {id: user, server: address}}));
+});
+
 
 chat.on('data', (data) => {
     try {
