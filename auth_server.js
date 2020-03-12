@@ -14,8 +14,8 @@ net.createServer((c) => {
             console.log(data.toString().trim());
             data = JSON.parse(data.toString().trim());
             if(data.intent == "recieve") {
-                console.log(`New server registered at ${c.remoteAddress}`);
-                servers[c.remoteAddress] = c;
+                console.log(`New server registered at ${c.localAddress}`);
+                servers[c.localAddress] = c;
             } else {
                 let hash = crypto.createHash('sha256').update(data.data.id).digest('hex');
                 servers[data.data.server].write(JSON.stringify({id: hash}));
@@ -27,8 +27,8 @@ net.createServer((c) => {
     });
 
     c.on('close', () => {
-        if(servers[c.remoteAddress]) {
-            delete servers[c.remoteAddress];
+        if(servers[c.localAddress]) {
+            delete servers[c.localAddress];
         }
     })
 }).listen({host: '0.0.0.0', port: 8090}, () => {

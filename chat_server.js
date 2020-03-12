@@ -1,7 +1,7 @@
 const net = require('net');
 const EventEmitter = require('events');
 
-const auth = net.createConnection(8090, "0.0.0.0");
+const auth = net.createConnection(8090, process.argv[2]);
 const channel = new EventEmitter();
 
 let users = {};

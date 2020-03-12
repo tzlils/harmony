@@ -2,14 +2,13 @@
 
 const net = require('net');
 
-const address = process.argv[2];
-const user = process.argv[3];
-const chat = net.createConnection(8080, address);
-const auth = net.createConnection(8090, address);
+const user = process.argv[4];
+const chat = net.createConnection(8080, process.argv[2]);
+const auth = net.createConnection(8090, process.argv[3]);
 process.stdin.resume();
 process.stdin.setEncoding('utf8');
 
-auth.write(JSON.stringify({intent: "register", data: {id: user, server: address}}));
+auth.write(JSON.stringify({intent: "register", data: {id: user, server: process.argv[2]}}));
 
 chat.on('data', (data) => {
     try {
