@@ -11,7 +11,9 @@ auth.write(JSON.stringify({intent: "recieve"}));
 
 net.createServer((c) => {
     const broadcast = (data) => {c.write(data)};
-    channel.on('broadcast', broadcast);
+    const send_message = (from, content) => {
+        channel.emit('broadcast', JSON.stringify({intent: "message", data:{from: from, content: content}}));
+    }
 
     c.on('data', (data) => {
         try {
@@ -21,21 +23,27 @@ net.createServer((c) => {
                     console.log(`${data.data} Verified`);
                     c.id = data.data;
                     claimqueue.shift();
+
+                    channel.on('broadcast', broadcast);
+                    send_message("0", `${c.id} has joined`);
                 }
             } else if(data.intent == "message") {
                 if(c.id) {
-                    channel.emit('broadcast', JSON.stringify({intent: "message", data: {from: c.id, content: data.data.trim()}}));
-                    console.log(`[${c.id}] ${data.data}`);   
+                    send_message(c.id, data.data.trim());
+                    console.log(`[${c.id}] ${data.data}`);
                 }
             }
         } catch(error) {
-            throw error
+            // throw error
         }
     });
 
     c.on('close', () => {
-        console.log(`[${c.id} exit]`);
-        channel.removeListener('broadcast', broadcast);
+        if(c.id) {
+            console.log(`[${c.id} exit]`);
+            channel.removeListener('broadcast', broadcast);
+            send_message("0", `${c.id} has left`);
+        }
     })
 }).listen({host: '0.0.0.0',port: 8080}, () => {
     console.log("server started");

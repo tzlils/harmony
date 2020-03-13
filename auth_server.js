@@ -22,7 +22,7 @@ net.createServer((c) => {
                 c.write(JSON.stringify({id: hash}));
             }
         } catch (error) {
-            throw error;
+            // throw error;
         }
     });
 
