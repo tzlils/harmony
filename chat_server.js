@@ -25,7 +25,7 @@ net.createServer((c) => {
                     claimqueue.shift();
 
                     channel.on('broadcast', broadcast);
-                    send_message("0", `${c.id} has joined`);
+                    send_message(null, `<@${c.id}> has joined`);
                 }
             } else if(data.intent == "message") {
                 if(c.id) {
@@ -42,7 +42,7 @@ net.createServer((c) => {
         if(c.id) {
             console.log(`[${c.id} exit]`);
             channel.removeListener('broadcast', broadcast);
-            send_message("0", `${c.id} has left`);
+            send_message(null, `<@${c.id}> has left`);
         }
     })
 }).listen({host: '0.0.0.0',port: 8080}, () => {
